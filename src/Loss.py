@@ -1,3 +1,5 @@
+import torch.nn as nn
+
 class MixedLoss(nn.Module):
     def __init__(self, alpha=0.5):
         """

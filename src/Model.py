@@ -1,8 +1,6 @@
 import torch
 import torch.nn as nn
 
-NUM_ACTIONS = 26
-
 class Simple3DCNN(nn.Module):
     def __init__(self, num_classes=10):
         super(Simple3DCNN, self).__init__()
