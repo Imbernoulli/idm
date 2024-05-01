@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader, random_split
 from torchvision import transforms
 from torchvision.transforms import Compose, ToTensor, Normalize
 
-from ActionMapping import action_num
+from ActionMapping import ACTION_NUM
 from Loss import MixedLoss
 from DataLoader_nxn import DataLoader_nxn
 from Model import VideoActionModel
@@ -45,7 +45,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # 初始化模型、损失函数和优化器
-    model = VideoActionModel(action_num()).to(device)
+    model = VideoActionModel(ACTION_NUM).to(device)
     criterion = MixedLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
