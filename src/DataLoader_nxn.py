@@ -3,13 +3,11 @@ import json
 import cv2
 import numpy as np
 import torch
-from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
-from torchvision.transforms import Compose, ToTensor, Normalize
 
-from ActionMapping import ACTION_MAPPING
+from utils import action_to_vec
 
-class VideoActionDataset(Dataset):
+class DataLoader_nxn(Dataset):
     def __init__(self, logs_dir, videos_dir, num_frames=60, transform=None):
         self.logs_dir = logs_dir
         self.videos_dir = videos_dir
@@ -21,7 +19,7 @@ class VideoActionDataset(Dataset):
         samples = []
         for log_file in os.listdir(self.logs_dir):
             if log_file.endswith(".json"):
-                base_name = log_file.split("_")[1].split(".")[0]
+                base_name = log_file[4:].split(".")[0]
                 video_file = f"screen_{base_name}.mp4"
                 video_path = os.path.join(self.videos_dir, video_file)
                 if os.path.exists(video_path):
@@ -38,7 +36,7 @@ class VideoActionDataset(Dataset):
 
     def __getitem__(self, idx):
         base_name, start_frame = self.samples[idx]
-        video_path = os.path.join(self.videos_dir, f"video_{base_name}.avi")
+        video_path = os.path.join(self.videos_dir, f"screen_{base_name}.mp4")
         log_path = os.path.join(self.logs_dir, f"log_{base_name}.json")
 
         cap = cv2.VideoCapture(video_path)
@@ -61,7 +59,7 @@ class VideoActionDataset(Dataset):
         for action in actions[start_frame : start_frame + self.num_frames]:
             x, y = action["position"]["x"], action["position"]["y"]
             action_type = action["type"]
-            action_vec = self.action_to_vec(action_type)
+            action_vec = action_to_vec(action_type)
             label = np.array([x, y] + action_vec, dtype=np.float32)
             labels.append(label)
 
@@ -69,28 +67,3 @@ class VideoActionDataset(Dataset):
         labels = torch.tensor(labels, dtype=torch.float32)
 
         return frames, labels
-
-    def action_to_vec(self, action_type):
-        action_types = ACTION_MAPPING.values()
-        vec = [1 if action_type == act else 0 for act in action_types]
-        return vec
-
-
-transform = Compose(
-    [
-        transforms.ToPILImage(),
-        ToTensor(), 
-        transforms.Resize((1280, 720)),
-        Normalize(mean=[0.485, 0.456, 0.406], 
-                  std=[0.229, 0.224, 0.225])
-    ]
-)
-
-dataset = VideoActionDataset(
-    logs_dir="path/to/logs",
-    videos_dir="path/to/videos",
-    num_frames=60,
-    transform=transform,
-)
-
-dataloader = DataLoader(dataset, batch_size=4, shuffle=True)

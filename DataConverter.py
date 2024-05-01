@@ -33,8 +33,9 @@ def process_json_data(data, total_frames, fps=30):
             new_data.append(
                 {
                     "frame": time_to_frame(item["end_time"], fps),
-                    "type": "drag_end", 
-                    "position": item["end"]}
+                    "type": "drag_end",
+                    "position": item["end"],
+                }
             )
         elif item["type"] == "scroll":
             start_frame = time_to_frame(item["start_time"], fps)
@@ -54,14 +55,16 @@ def process_json_data(data, total_frames, fps=30):
         elif item["type"] == "keypress":
             key = item["keys"]
             if len(key) == 1:
-                new_data.append({"frame": time_to_frame(item["start_time"], fps), "type": key})
+                new_data.append(
+                    {"frame": time_to_frame(item["start_time"], fps), "type": key, "position": {"x": -1, "y": -1}}
+                )
             else:
                 start_frame = time_to_frame(item["start_time"], fps)
                 end_frame = time_to_frame(item["end_time"], fps)
                 frames_count = end_frame - start_frame
                 for i, char in enumerate(key):
                     event_frame = start_frame + int(i * frames_count / (len(key) - 1))
-                    new_data.append({"frame": event_frame, "type": char})
+                    new_data.append({"frame": event_frame, "type": char, "position": {"x": -1, "y": -1}})
         else:
             frame = time_to_frame(item["time"], fps)
             item["frame"] = frame
@@ -71,6 +74,7 @@ def process_json_data(data, total_frames, fps=30):
                 del item["button"]
             if item["type"] == "special_key":
                 item["type"] = item["key"]
+                item["position"] = {"x": -1, "y": -1}
                 del item["key"]
             new_data.append(item)
 
@@ -95,12 +99,13 @@ def process_json_data(data, total_frames, fps=30):
             i += 1
 
     frames_data = [
-        {"frame": i, "type": "NO_ACTION", "position": None} for i in range(total_frames)
+        {"frame": i, "type": "NO_ACTION", "position": {"x": -1, "y": -1}}
+        for i in range(total_frames)
     ]
 
     for item in new_data:
         try:
-            frames_data[item["frame"]] = item   
+            frames_data[item["frame"]] = item
         except:
             break
 
@@ -120,7 +125,7 @@ def main(logs_folder, videos_folder, target_folder):
             log_path = os.path.join(logs_folder, log_filename)
 
             total_frames = get_video_frame_count(video_path)
-            
+
             if total_frames == 0:
                 continue
 

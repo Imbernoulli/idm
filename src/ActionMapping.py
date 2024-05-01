@@ -113,3 +113,9 @@ ACTION_MAPPING = {
     "scroll": "SCROLL",
     "NO_ACTION": "NO_ACTION",
 }
+
+def action_num():
+    return len(set(ACTION_MAPPING))
+
+def action_types():
+    return list(set(ACTION_MAPPING))
