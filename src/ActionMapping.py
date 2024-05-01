@@ -115,13 +115,22 @@ ACTION_MAPPING = {
     "NO_ACTION": "NO_ACTION",
 }
 
-SPECIAL_KEYS = ['Key.space', 'Key.shift', 'Key.ctrl', 'Key.alt', 'Key.backspace', 'Key.enter', 'Key.tab', 'Key.up', 'Key.down', 'Key.left', 'Key.right', 'Key.esc', 'Key.cmd', 'Key.delete', 'Key.caps_lock']
+def special_keys():
+    return [key for key in list(ACTION_MAPPING.keys()) if "Key" in key]
 
 def action_num():
-    return len(set(ACTION_MAPPING))
+    return len(set(ACTION_MAPPING.values()))
 
 def action_types():
-    return list(set(ACTION_MAPPING))
+    return list(set(ACTION_MAPPING.values()))
+
+SPECIAL_KEYS = special_keys()
+
+ACTION_NUM = action_num()
+
+ACTION_TYPES = action_types()
 
 if __name__ == "__main__":
-    print(list(ACTION_MAPPING.keys()))
+    print(SPECIAL_KEYS)
+    print(ACTION_NUM)
+    print(ACTION_TYPES)
