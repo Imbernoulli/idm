@@ -59,7 +59,7 @@ class VideoActionDataset(Dataset):
         # Assuming actions are aligned with frames
         labels = []
         for action in actions[start_frame : start_frame + self.num_frames]:
-            x, y = action["position"]["x"], action["position_y"]["y"]
+            x, y = action["position"]["x"], action["position"]["y"]
             action_type = action["type"]
             action_vec = self.action_to_vec(action_type)
             label = np.array([x, y] + action_vec, dtype=np.float32)
