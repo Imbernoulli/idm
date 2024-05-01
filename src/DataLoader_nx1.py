@@ -5,11 +5,11 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 
-from .utils import action_to_vec
-from .ActionMapping import ACTION_MAPPING
+from utils import action_to_vec
+from ActionMapping import ACTION_MAPPING
 
 
-class DataLoader_nxn(Dataset):
+class DataLoader_nx1(Dataset):
     def __init__(self, logs_dir, videos_dir, num_frames=60, transform=None):
         self.logs_dir = logs_dir
         self.videos_dir = videos_dir
@@ -72,7 +72,7 @@ class DataLoader_nxn(Dataset):
             actions[start_frame : start_frame + self.num_frames]
         )
 
-        action_vec = action_to_vec(ACTION_MAPPING[action_type])
+        action_vec = action_to_vec(ACTION_MAPPING.get(action_type, "NO_ACTION"))
         label = np.array([x, y] + action_vec, dtype=np.float32)
 
         label = torch.tensor(label, dtype=torch.float32)

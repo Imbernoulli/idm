@@ -5,8 +5,8 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 
-from .utils import action_to_vec
-from .ActionMapping import ACTION_MAPPING
+from utils import action_to_vec
+from ActionMapping import ACTION_MAPPING
 
 
 class DataLoader_nxn(Dataset):
@@ -61,7 +61,7 @@ class DataLoader_nxn(Dataset):
         for action in actions[start_frame : start_frame + self.num_frames]:
             x, y = action["position"]["x"], action["position"]["y"]
             action_type = action["type"]
-            action_vec = action_to_vec(ACTION_MAPPING[action_type])
+            action_vec = action_to_vec(ACTION_MAPPING.get(action_type, "NO_ACTION"))
             label = np.array([x, y] + action_vec, dtype=np.float32)
             labels.append(label)
 
