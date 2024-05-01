@@ -22,7 +22,7 @@ class VideoActionDataset(Dataset):
         for log_file in os.listdir(self.logs_dir):
             if log_file.endswith(".json"):
                 base_name = log_file.split("_")[1].split(".")[0]
-                video_file = f"video_{base_name}.mp4"
+                video_file = f"screen_{base_name}.mp4"
                 video_path = os.path.join(self.videos_dir, video_file)
                 if os.path.exists(video_path):
                     cap = cv2.VideoCapture(video_path)
