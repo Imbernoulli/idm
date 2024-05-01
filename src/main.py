@@ -7,7 +7,7 @@ from torchvision.transforms import Compose, ToTensor, Normalize
 
 from ActionMapping import ACTION_NUM
 from Loss import MixedLoss_1d
-from DataLoader_nx1 import DataLoader_nx1
+from DataLoader import DataLoader_nx1
 from Model import VideoActionModel
 
 # 训练函数
