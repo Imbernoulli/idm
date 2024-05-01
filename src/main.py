@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
-from .DataLoader import VideoActionDataset
+from .DataLoader_nxn import VideoActionDataset
 from .Model import Simple3DCNN
 
 

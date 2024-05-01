@@ -8,31 +8,36 @@ def time_to_frame(time, fps):
 
 
 def get_video_frame_count(video_path):
-    video = cv2.VideoCapture(video_path)
-    if not video.isOpened():
-        raise FileNotFoundError(f"Unable to open video file: {video_path}")
-    frame_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
-    video.release()
-    return frame_count
+    try:
+        video = cv2.VideoCapture(video_path)
+        frame_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+        video.release()
+        return frame_count
+    except:
+        return 0
 
 
 def process_json_data(data, total_frames, fps=30):
     new_data = []
     for item in data:
+        if "time" in item and not item["time"]:
+            continue
         if item["type"] == "drag":
-            frame = time_to_frame(item["time"], fps)
             new_data.append(
                 {
-                    "frame": frame,
+                    "frame": time_to_frame(item["start_time"], fps),
                     "type": "drag_start",
-                    "position": item["start_position"],
+                    "position": item["start"],
                 }
             )
             new_data.append(
-                {"frame": frame, "type": "drag_end", "position": item["end_position"]}
+                {
+                    "frame": time_to_frame(item["end_time"], fps),
+                    "type": "drag_end", 
+                    "position": item["end"]}
             )
         elif item["type"] == "scroll":
-            start_frame = time_to_frame(item["time"], fps)
+            start_frame = time_to_frame(item["start_time"], fps)
             end_frame = time_to_frame(item["end_time"], fps)
             frames_count = end_frame - start_frame
             amount_per_frame = item["amount"] / frames_count if frames_count > 0 else 0
@@ -47,13 +52,16 @@ def process_json_data(data, total_frames, fps=30):
                     }
                 )
         elif item["type"] == "keypress":
-            key = item["key"]
-            start_frame = time_to_frame(item["start_time"], fps)
-            end_frame = time_to_frame(item["end_time"], fps)
-            frames_count = end_frame - start_frame
-            for i, char in enumerate(key):
-                event_frame = start_frame + int(i * frames_count / (len(key) - 1))
-                new_data.append({"frame": event_frame, "type": char})
+            key = item["keys"]
+            if len(key) == 1:
+                new_data.append({"frame": time_to_frame(item["start_time"], fps), "type": key})
+            else:
+                start_frame = time_to_frame(item["start_time"], fps)
+                end_frame = time_to_frame(item["end_time"], fps)
+                frames_count = end_frame - start_frame
+                for i, char in enumerate(key):
+                    event_frame = start_frame + int(i * frames_count / (len(key) - 1))
+                    new_data.append({"frame": event_frame, "type": char})
         else:
             frame = time_to_frame(item["time"], fps)
             item["frame"] = frame
@@ -69,7 +77,7 @@ def process_json_data(data, total_frames, fps=30):
     # ffmpeg开始记录有延迟，这个尝试去掉开始录制视频前记录的东西
     start_index = 0
     for i in range(len(new_data) - 1):
-        if data[i]["frame"] > data[i + 1]["frame"]:
+        if new_data[i]["frame"] > new_data[i + 1]["frame"]:
             start_index = i + 1
             break
     new_data = new_data[start_index:]
@@ -91,7 +99,10 @@ def process_json_data(data, total_frames, fps=30):
     ]
 
     for item in new_data:
-        frames_data[item["frame"]] = item
+        try:
+            frames_data[item["frame"]] = item   
+        except:
+            break
 
     return frames_data
 
@@ -102,12 +113,16 @@ def main(logs_folder, videos_folder, target_folder):
 
     for log_filename in os.listdir(logs_folder):
         if log_filename.endswith(".json"):
+            print(log_filename)
             base_name = log_filename[:-5]  # Remove '.json' extension
-            video_filename = f"video_{base_name}.mp4"
+            video_filename = f"screen_{base_name[4:]}.mp4"
             video_path = os.path.join(videos_folder, video_filename)
             log_path = os.path.join(logs_folder, log_filename)
 
             total_frames = get_video_frame_count(video_path)
+            
+            if total_frames == 0:
+                continue
 
             with open(log_path, "r", encoding="utf-8") as file:
                 data = json.load(file)
@@ -120,7 +135,7 @@ def main(logs_folder, videos_folder, target_folder):
 
 
 if __name__ == "__main__":
-    logs_folder = "path/to/logs"
-    videos_folder = "path/to/videos"
-    target_folder = "path/to/target/folder"
+    logs_folder = "/Users/bernoulli_hermes/projects/cad/detect/logs"
+    videos_folder = "/Users/bernoulli_hermes/projects/cad/detect/videos"
+    target_folder = "/Users/bernoulli_hermes/projects/cad/detect/logs_refined"
     main(logs_folder, videos_folder, target_folder)
