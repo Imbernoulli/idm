@@ -87,7 +87,7 @@ def process_json_data(data, total_frames, fps=30):
             i += 1
 
     frames_data = [
-        {"frame": i, "type": None, "position": None} for i in range(total_frames)
+        {"frame": i, "type": "NO_ACTION", "position": None} for i in range(total_frames)
     ]
 
     for item in new_data:

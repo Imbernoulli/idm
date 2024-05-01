@@ -3,6 +3,7 @@ import json
 import cv2
 import numpy as np
 import torch
+from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
 
@@ -119,6 +120,7 @@ ACTION_MAPPING = {
     "drag_start": "DRAG_START",
     "drag_end": "DRAG_END",
     "scroll": "SCROLL",
+    "NO_ACTION": "NO_ACTION",
 }
 
 print(len(ACTION_MAPPING.values()))
@@ -192,7 +194,13 @@ class VideoActionDataset(Dataset):
 
 
 transform = Compose(
-    [ToTensor(), Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
+    [
+        transforms.ToPILImage(),
+        ToTensor(), 
+        transforms.Resize((1280, 720)),
+        Normalize(mean=[0.485, 0.456, 0.406], 
+                  std=[0.229, 0.224, 0.225])
+    ]
 )
 
 dataset = VideoActionDataset(
