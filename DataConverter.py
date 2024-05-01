@@ -2,6 +2,7 @@ import os
 import json
 import cv2
 
+from .src.ActionMapping import SPECIAL_KEYS
 
 def time_to_frame(time, fps):
     return int(time * fps)
@@ -73,7 +74,10 @@ def process_json_data(data, total_frames, fps=30):
                 item["type"] = item["button"]
                 del item["button"]
             if item["type"] == "special_key":
-                item["type"] = item["key"]
+                if item["key"] in SPECIAL_KEYS:
+                    item["type"] = item["key"]
+                else:
+                    item["type"] = "NO_ACTION"
                 item["position"] = {"x": -1, "y": -1}
                 del item["key"]
             new_data.append(item)
@@ -92,6 +96,7 @@ def process_json_data(data, total_frames, fps=30):
             new_data[i]["type"] == "Button.left"
             and new_data[i + 1]["type"] == "Button.left"
             and new_data[i]["position"] == new_data[i + 1]["position"]
+            and new_data[i + 1]["frame"] - new_data[i]["frame"] < fps
         ):
             new_data[i]["type"] = "DOUBLE_CLICK"
             del new_data[i + 1]
