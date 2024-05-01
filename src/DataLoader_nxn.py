@@ -8,6 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 from .utils import action_to_vec
 from .ActionMapping import ACTION_MAPPING
 
+
 class DataLoader_nxn(Dataset):
     def __init__(self, logs_dir, videos_dir, num_frames=60, transform=None):
         self.logs_dir = logs_dir

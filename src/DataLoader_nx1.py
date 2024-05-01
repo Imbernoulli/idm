@@ -8,6 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 from .utils import action_to_vec
 from .ActionMapping import ACTION_MAPPING
 
+
 class DataLoader_nxn(Dataset):
     def __init__(self, logs_dir, videos_dir, num_frames=60, transform=None):
         self.logs_dir = logs_dir
@@ -34,7 +35,7 @@ class DataLoader_nxn(Dataset):
 
     def __len__(self):
         return len(self.samples)
-    
+
     def _merge_actions(self, actions):
         x = -1
         y = -1
@@ -67,8 +68,10 @@ class DataLoader_nxn(Dataset):
         with open(log_path, "r") as f:
             actions = json.load(f)
 
-        x, y, action_type = self._merge_actions(actions[start_frame : start_frame + self.num_frames])
-            
+        x, y, action_type = self._merge_actions(
+            actions[start_frame : start_frame + self.num_frames]
+        )
+
         action_vec = action_to_vec(ACTION_MAPPING[action_type])
         label = np.array([x, y] + action_vec, dtype=np.float32)
 

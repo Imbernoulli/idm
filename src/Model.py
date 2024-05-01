@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 class VideoActionModel(nn.Module):
     def __init__(self, num_actions):
         super(VideoActionModel, self).__init__()

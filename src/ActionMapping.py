@@ -42,6 +42,8 @@ ACTION_MAPPING = {
     "¥": "KEY_4",
     "%": "KEY_5",
     "^": "KEY_6",
+    "…": "KEY_6",
+    "……": "KEY_6",
     "&": "KEY_7",
     "*": "KEY_8",
     "(": "KEY_9",
@@ -80,15 +82,15 @@ ACTION_MAPPING = {
     ">": "KEY_DOT",
     "》": "KEY_DOT",
     "/": "KEY_SLASH",
-    "、": "KEY_SLASH",
     "?": "KEY_SLASH",
     "？": "KEY_SLASH",
     "\\": "KEY_BACKSLASH",
     "|": "KEY_BACKSLASH",
-    "、": "KEY_GRAVE",
+    "、": "KEY_BACKSLASH",
     "`": "KEY_GRAVE",
     "~": "KEY_GRAVE",
     "·": "KEY_GRAVE",
+    "～": "KEY_GRAVE",
     "Key.space": "KEY_SPACE",
     "Key.shift": "KEY_SHIFT",
     "Key.ctrl": "KEY_CTRL",
@@ -115,14 +117,18 @@ ACTION_MAPPING = {
     "NO_ACTION": "NO_ACTION",
 }
 
+
 def special_keys():
     return [key for key in list(ACTION_MAPPING.keys()) if "Key" in key]
+
 
 def action_num():
     return len(set(ACTION_MAPPING.values()))
 
+
 def action_types():
     return list(set(ACTION_MAPPING.values()))
+
 
 SPECIAL_KEYS = special_keys()
 

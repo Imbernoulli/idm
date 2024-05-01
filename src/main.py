@@ -10,11 +10,12 @@ from Loss import MixedLoss
 from DataLoader_nxn import DataLoader_nxn
 from Model import VideoActionModel
 
+
 def main():
     batch_size = 32
     num_epochs = 2
     learning_rate = 0.0001
-    
+
     # 数据转换
     transform = Compose(
         [
@@ -53,10 +54,13 @@ def main():
     for epoch in range(num_epochs):
         train_loss = train(model, train_dataloader, criterion, optimizer, device)
         test_loss = evaluate(model, test_dataloader, criterion, device)
-        print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Test Loss: {test_loss:.4f}")
+        print(
+            f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Test Loss: {test_loss:.4f}"
+        )
 
     # 保存训练好的模型
     torch.save(model.state_dict(), "trained_model.pth")
+
 
 # 训练函数
 def train(model, dataloader, criterion, optimizer, device):
@@ -74,6 +78,7 @@ def train(model, dataloader, criterion, optimizer, device):
     epoch_loss = running_loss / len(dataloader)
     return epoch_loss
 
+
 # 测试函数
 def evaluate(model, dataloader, criterion, device):
     model.eval()
@@ -87,6 +92,7 @@ def evaluate(model, dataloader, criterion, device):
             running_loss += loss.item()
     epoch_loss = running_loss / len(dataloader)
     return epoch_loss
+
 
 if __name__ == "__main__":
     main()

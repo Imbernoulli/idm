@@ -4,6 +4,7 @@ import cv2
 
 from .src.ActionMapping import SPECIAL_KEYS
 
+
 def time_to_frame(time, fps):
     return int(time * fps)
 
@@ -57,7 +58,11 @@ def process_json_data(data, total_frames, fps=30):
             key = item["keys"]
             if len(key) == 1:
                 new_data.append(
-                    {"frame": time_to_frame(item["start_time"], fps), "type": key, "position": {"x": -1, "y": -1}}
+                    {
+                        "frame": time_to_frame(item["start_time"], fps),
+                        "type": key,
+                        "position": {"x": -1, "y": -1},
+                    }
                 )
             else:
                 start_frame = time_to_frame(item["start_time"], fps)
@@ -65,7 +70,13 @@ def process_json_data(data, total_frames, fps=30):
                 frames_count = end_frame - start_frame
                 for i, char in enumerate(key):
                     event_frame = start_frame + int(i * frames_count / (len(key) - 1))
-                    new_data.append({"frame": event_frame, "type": char, "position": {"x": -1, "y": -1}})
+                    new_data.append(
+                        {
+                            "frame": event_frame,
+                            "type": char,
+                            "position": {"x": -1, "y": -1},
+                        }
+                    )
         else:
             frame = time_to_frame(item["time"], fps)
             item["frame"] = frame
