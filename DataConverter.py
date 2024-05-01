@@ -47,7 +47,7 @@ def process_json_data(data, total_frames, fps=30):
                 new_data.append(
                     {
                         "frame": frame,
-                        "type": "scroll",
+                        "type": "scroll_up" if amount_per_frame > 0 else "scroll_down",
                         "position": item["position"],
                         "amount": amount_per_frame,
                     }

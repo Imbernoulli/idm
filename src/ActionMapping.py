@@ -110,7 +110,8 @@ ACTION_MAPPING = {
     "Button.middle": "MOUSE_MIDDLE",
     "drag_start": "DRAG_START",
     "drag_end": "DRAG_END",
-    "scroll": "SCROLL",
+    "scroll_up": "SCROLL_UP",
+    "scroll_down": "SCROLL_DOWN",
     "NO_ACTION": "NO_ACTION",
 }
 
