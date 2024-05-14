@@ -2,8 +2,10 @@ import os
 import json
 import cv2
 
-from .src.ActionMapping import SPECIAL_KEYS
+import sys
+sys.path.append('/Users/bernoulli_hermes/projects/cad/detect/idm/src')
 
+from ActionMapping import SPECIAL_KEYS
 
 def time_to_frame(time, fps):
     return int(time * fps)
@@ -23,6 +25,8 @@ def process_json_data(data, total_frames, fps=30):
     new_data = []
     for item in data:
         if "time" in item and not item["time"]:
+            continue
+        if item["type"] == "mouse_move":
             continue
         if item["type"] == "drag":
             new_data.append(
