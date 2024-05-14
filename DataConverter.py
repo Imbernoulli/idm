@@ -21,7 +21,7 @@ def get_video_frame_count(video_path):
         return 0
 
 
-def process_json_data(data, total_frames, fps=30):
+def process_json_data(data, total_frames, fps=10):
     new_data = []
     for item in data:
         if "time" in item and not item["time"]:
@@ -160,7 +160,10 @@ def main(logs_folder, videos_folder, target_folder):
 
 
 if __name__ == "__main__":
-    logs_folder = "/Users/bernoulli_hermes/projects/cad/detect/logs"
-    videos_folder = "/Users/bernoulli_hermes/projects/cad/detect/videos"
-    target_folder = "/Users/bernoulli_hermes/projects/cad/detect/logs_refined"
-    main(logs_folder, videos_folder, target_folder)
+    videos_folder = "/Users/bernoulli_hermes/projects/cad/detect/train_videos"
+    target_folder = "/Users/bernoulli_hermes/projects/cad/detect/train_logs"
+    dirs1 = [f'/Users/bernoulli_hermes/Downloads/{str(i)}杜铭泽/logs' for i in range(6, 24)]
+    dirs2 = [f"/Users/bernoulli_hermes/Downloads/Records-{str(i)}/logs" for i in range(10)]
+    dirs = dirs1 + dirs2
+    for logs_folder in dirs:
+        main(logs_folder, videos_folder, target_folder)
