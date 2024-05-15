@@ -155,6 +155,10 @@ def action_num():
 def action_types():
     return list(set(ACTION_MAPPING.values()))
 
+def action_mapping(key):
+    if key in ACTION_MAPPING:
+        return ACTION_MAPPING[key]
+    return "NO_ACTION"
 
 SPECIAL_KEYS = special_keys()
 
